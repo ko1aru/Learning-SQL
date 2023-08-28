@@ -7,7 +7,7 @@ create table emp (
     mgr int,
     deptno int
 );
-insert into emp values(5, 'eee', 'manager', 20000, 3, 20);
+insert into emp values(6, 'fff', null, null, null, 20);
 
 create table dept (
 	deptno int, 
@@ -75,3 +75,20 @@ where sal = (select max(sal) from emp) and E.deptno = D.deptno;
 
 select ename, sal, deptno from emp E
 where sal > (select avg(sal) from emp where deptno=E.deptno);
+
+update emp E
+set (sal, ename) = (select sal+100, concat(ename, 'hello')
+					from emp where eno=E.eno);
+                    
+UPDATE emp E
+JOIN (
+    SELECT eno, sal + 100 AS new_sal, CONCAT(ename, 'hello') AS new_ename
+    FROM emp
+) AS subquery
+ON E.eno = subquery.eno
+SET E.sal = subquery.new_sal, E.ename = subquery.new_ename;
+
+start transaction;
+delete from emp
+where eno=6;
+rollback
